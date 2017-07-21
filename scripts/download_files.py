@@ -1,65 +1,83 @@
 import os, sys, paramiko
 from settings import *
 from tradingcore.signalapp import SignalApp, APPCLASS_DATA
-from tradingcore.messages import *
+from ftp_transfer_code.ftp_transferring import FtpTransfer
 
-def download_file_sftp(remote_dir, filename, local_dir, hostname, username, password):
+ftpt = FtpTransfer()
 
-    port = 22
+ftpt.clear_local_folder(MJT_LOCAL_FOLDER)
 
-    try:
-        os.path.exists(local_dir) or os.makedirs(local_dir)
-
-        local_path = os.path.join(local_dir, filename)
-        remote_path = remote_dir + '/' + filename
-
-        client = paramiko.SSHClient()
-        #client.load_system_host_keys()
-        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-
-        client.connect(hostname=hostname,  port=port, username=username, password=password)
-
-        ftp = client.open_sftp()
-        ftp.get(remote_path, local_path)
-        #ftp.get('ftpbackup/gmi_reconcile/TMQR_PNL_20170718.csv', 'C:\\TEST\\TMQR_PNL_20170718.csv')
-        ftp.close()
-
-        if PUSH_SLACK_LOGGING:
-            signalapp = SignalApp('historicaldata', APPCLASS_DATA, RABBIT_HOST, RABBIT_USER, RABBIT_PASSW)
-
-            signalapp.send(MsgStatus('HISTORICAL_LOAD',
-                                          'Loaded MJT GMI DATA {0}'.format(filename), notify=True))
+ftpt.download_file_sftp(MJT_REMOTE_FOLDER,
+                        ftpt.get_position_file(),
+                        MJT_LOCAL_FOLDER,
+                        hostname=TMQR_BACKUP_DAILYPNL_HOST,
+                        username = CME_SPAN_USER,
+                        password = CME_SPAN_PWD,
+                        slack_message = "MJT GMI DATA")
 
 
-    finally:
-        client.close()
+ftpt.clear_local_folder(CME_SPAN_LOCAL_FOLDER)
 
-def get_position_file_mask():
-    from datetime import datetime
-    from datetime import timedelta
-    from time import strftime
+cme_file = ftpt.get_cme_span_file()
 
-    currentDate = datetime.now()
-    # day of the week as an integer, where Monday is 0 and Sunday is 6.
-    if currentDate.weekday() == 0:
-        currentDate = currentDate - timedelta(days=3)
-    elif currentDate.weekday() == 6:
-        currentDate = currentDate - timedelta(days=2)
-    else:
-        currentDate = currentDate - timedelta(days=1)
+ftpt.download_file_ftp(CME_SPAN_REMOTE_FOLDER,
+                       cme_file,
+                       CME_SPAN_LOCAL_FOLDER,
+                        hostname=CME_SPAN_HOST,
+                        username = CME_SPAN_USER,
+                        password = CME_SPAN_PWD,
+                        slack_message = "SPAN FTP CME DATA")
 
-    return "TMQR_PNL_" + currentDate.strftime("%Y%m%d") + ".csv"
+ftpt.upload_file_sftp(CME_SPAN_REMOTE_BACKUP_FOLDER,
+                      ftpt.get_cme_span_file(),
+                      CME_SPAN_LOCAL_FOLDER,
+                        hostname=TMQR_BACKUP_DAILYPNL_HOST,
+                        username = TMQR_BACKUP_DAILYPNL_USER,
+                        password = TMQR_BACKUP_DAILYPNL_PWD,
+                        slack_message = "CME SPAN BACKUP DATA")
 
-def clear_local_folder(path_to_clear):
-    import glob
+ftpt.unzip_span_file(cme_file,CME_SPAN_LOCAL_FOLDER)
 
-    files = glob.glob(path_to_clear + '*')
-    for f in files:
-        os.remove(f)
 
-clear_local_folder(MJT_LOCAL_FOLDER)
 
-file = get_position_file_mask() #'TMQR_PNL_20170718.csv'
+ice_file = ftpt.get_cme_ice_span_file()
 
-download_file_sftp(MJT_REMOTE_FOLDER, file, MJT_LOCAL_FOLDER,
-                   hostname=MJT_HOST, username = MJT_USER, password = MJT_PWD)
+ftpt.download_file_ftp(ICE_SPAN_REMOTE_FOLDER,
+                       ice_file,
+                       ICE_SPAN_LOCAL_FOLDER,
+                        hostname=ICE_SPAN_HOST,
+                        username = ICE_SPAN_USER,
+                        password = ICE_SPAN_PWD,
+                        slack_message = "SPAN FTP ICE DATA")
+
+ftpt.upload_file_sftp(ICE_SPAN_REMOTE_BACKUP_FOLDER,
+                      ice_file,
+                      ICE_SPAN_LOCAL_FOLDER,
+                        hostname=TMQR_BACKUP_DAILYPNL_HOST,
+                        username = TMQR_BACKUP_DAILYPNL_USER,
+                        password = TMQR_BACKUP_DAILYPNL_PWD,
+                        slack_message = "ICE SPAN BACKUP DATA")
+
+ftpt.unzip_span_file(ice_file,ICE_SPAN_LOCAL_FOLDER)
+
+
+
+nyb_file = ftpt.get_cme_nyb_span_file()
+
+ftpt.download_file_ftp(NYB_SPAN_REMOTE_FOLDER,
+                       nyb_file,
+                       NYB_SPAN_LOCAL_FOLDER,
+                        hostname=NYB_SPAN_HOST,
+                        username = NYB_SPAN_USER,
+                        password = NYB_SPAN_PWD,
+                        slack_message = "SPAN FTP NYB DATA")
+
+ftpt.upload_file_sftp(NYB_SPAN_REMOTE_BACKUP_FOLDER,
+                      nyb_file,
+                      NYB_SPAN_LOCAL_FOLDER,
+                        hostname=TMQR_BACKUP_DAILYPNL_HOST,
+                        username = TMQR_BACKUP_DAILYPNL_USER,
+                        password = TMQR_BACKUP_DAILYPNL_PWD,
+                        slack_message = "NYB SPAN BACKUP DATA")
+
+ftpt.unzip_span_file(nyb_file,NYB_SPAN_LOCAL_FOLDER)
