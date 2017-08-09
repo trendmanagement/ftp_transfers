@@ -71,7 +71,7 @@ ftpt.unzip_span_file(nyb_file,NYB_SPAN_LOCAL_FOLDER)
 
 
 
-liffe_file = ftpt.get_cme_liffe_span_file()
+liffe_file = ftpt.get_liffe_span_file()
 
 ftpt.download_file_ftp(LIFFE_SPAN_REMOTE_FOLDER,
                        liffe_file,
