@@ -208,7 +208,7 @@ class FtpTransfer():
 
         file_info = self.get_datestr_for_file(1)
         file_info.file_name = \
-            "cme." + file_info.date_string + ".s.pa2.zip"
+            "liffe." + file_info.date_string + ".s.pa2.zip"
         return file_info
 
 
