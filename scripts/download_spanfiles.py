@@ -68,3 +68,25 @@ ftpt.upload_file_sftp(NYB_SPAN_REMOTE_BACKUP_FOLDER,
                         slack_message = "NYB SPAN BACKUP DATA")
 
 ftpt.unzip_span_file(nyb_file,NYB_SPAN_LOCAL_FOLDER)
+
+
+
+liffe_file = ftpt.get_cme_liffe_span_file()
+
+ftpt.download_file_ftp(LIFFE_SPAN_REMOTE_FOLDER,
+                       liffe_file,
+                       LIFFE_SPAN_LOCAL_FOLDER,
+                        hostname=LIFFE_SPAN_HOST,
+                        username = LIFFE_SPAN_USER,
+                        password = LIFFE_SPAN_PWD,
+                        slack_message = "SPAN FTP LIFFE DATA")
+
+ftpt.upload_file_sftp(LIFFE_SPAN_REMOTE_BACKUP_FOLDER,
+                      liffe_file,
+                      LIFFE_SPAN_LOCAL_FOLDER,
+                        hostname=TMQR_BACKUP_DAILYPNL_HOST,
+                        username = TMQR_BACKUP_DAILYPNL_USER,
+                        password = TMQR_BACKUP_DAILYPNL_PWD,
+                        slack_message = "LIFFE SPAN BACKUP DATA")
+
+ftpt.unzip_span_file(liffe_file,LIFFE_SPAN_LOCAL_FOLDER)

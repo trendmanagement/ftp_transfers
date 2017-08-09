@@ -203,6 +203,14 @@ class FtpTransfer():
             "nyb" + file_info.date_string + "f.sp6.zip"
         return file_info
 
+    def get_liffe_span_file(self):
+        #return "cme." + self.get_datestr_for_file(1)['string_name'] + ".c.pa2.zip"
+
+        file_info = self.get_datestr_for_file(1)
+        file_info.file_name = \
+            "cme." + file_info.date_string + ".s.pa2.zip"
+        return file_info
+
 
     def clear_local_folder(self, path_to_clear):
         #import os

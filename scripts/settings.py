@@ -25,6 +25,13 @@ NYB_SPAN_USER = "anonymous"
 NYB_SPAN_PWD = ""
 NYB_SPAN_REMOTE_BACKUP_FOLDER = "ftpbackup/span_data/nyb/"
 
+LIFFE_SPAN_LOCAL_FOLDER = "C:\\Span_Procedures_Cloud\\SPAN_DATA"
+LIFFE_SPAN_REMOTE_FOLDER = "span/data/liffe/"
+LIFFE_SPAN_HOST = "ftpstc.cmegroup.com"
+LIFFE_SPAN_USER = "anonymous"
+LIFFE_SPAN_PWD = ""
+LIFFE_SPAN_REMOTE_BACKUP_FOLDER = "ftpbackup/span_data/liffe/"
+
 
 # MONGO_CONNSTR = 'mongodb://tmqr:tmqr@10.0.1.2/tmldb_v2?authMechanism=SCRAM-SHA-1'
 # MONGO_EXO_DB = 'tmldb_v2'
