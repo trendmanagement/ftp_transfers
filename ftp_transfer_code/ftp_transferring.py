@@ -1,4 +1,8 @@
-from scripts.settings import *
+try:
+    from scripts.settings import *
+except ImportError:
+    from settings import *
+
 import os, paramiko
 from ftplib import FTP
 from tradingcore.signalapp import SignalApp, APPCLASS_DATA
